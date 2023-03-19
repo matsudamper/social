@@ -28,7 +28,7 @@ class Main {
             System.setProperty("logback.configurationFile", "logback.xml")
             embeddedServer(
                 CIO,
-                port = 8090,
+                port = ServerEnv.port,
                 module = Application::myApplicationModule,
                 configure = {
 
