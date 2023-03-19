@@ -18,5 +18,8 @@ object CustomLogger {
         fun info(message: String) {
             logger.info(message)
         }
+        fun debug(message: String) {
+            logger.debug(message)
+        }
     }
 }
