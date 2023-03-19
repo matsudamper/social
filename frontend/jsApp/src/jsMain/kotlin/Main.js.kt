@@ -1,46 +1,50 @@
-import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
 import kotlinx.browser.window
-import kotlinx.coroutines.flow.MutableStateFlow
+import navigation.NavController
+import navigation.Screen
+import net.matsudamper.social.common.LoginScreen
 import net.matsudamper.social.common.Root
 import org.jetbrains.skiko.wasm.onWasmReady
+import org.w3c.dom.HTMLCanvasElement
 
-@Immutable
-class NavController {
-    var path: MutableStateFlow<String> = MutableStateFlow(window.location.pathname)
-    init {
-        window.addEventListener("popstate", callback = {
-            path.value = window.location.pathname
-        })
-    }
-
-    fun navigateLogin() {
-        val url = "/login"
-        window.history.pushState(
-            data = null,
-            title = Title.Login.titleName,
-            url = url,
-        )
-        path.value = url
-    }
-
-    enum class Title(val titleName: String) {
-        Login("ログイン"),
-    }
-}
 
 fun main(args: Array<String>) {
     onWasmReady {
-        window.history
-        Window("Falling Balls") {
-            val navController = remember { NavController() }
+        @Suppress("unused")
+        val canvas = (window.document.getElementById("ComposeTarget") as HTMLCanvasElement).apply {
+            fillViewportSize()
+        }
 
-            Root(
-                text = navController.path.collectAsState().value,
-                onClick = {
-                    navController.navigateLogin()
+        Window(
+            title = "social",
+        ) {
+            val navController = remember {
+                NavController(
+                    initial = Screen.Root,
+                    directions = Screen.values().toList()
+                )
+            }
+
+            when (val current = navController.currentNavigation) {
+                Screen.Root -> {
+                    Root(
+                        text = current.title,
+                        onClick = {
+                            navController.navigate(Screen.Login)
+                        }
+                    )
                 }
-            )
+
+                Screen.Login -> {
+                    LoginScreen()
+                }
+            }
         }
     }
+}
+
+private fun HTMLCanvasElement.fillViewportSize() {
+    setAttribute("width", "${window.innerWidth}")
+    setAttribute("height", "${window.innerHeight}")
 }
