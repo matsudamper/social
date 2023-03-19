@@ -2,8 +2,11 @@ package net.matsudamper.social.base
 
 object ServerEnv {
     val domain = System.getenv()["SOCIAL_DOMAIN"]
+    val port = System.getenv()["SOCIAL_PORT"]?.toIntOrNull() ?: 80
     val frontPath = System.getenv()["HTML_PATH"] ?: "../frontend/jsApp/build/distributions"
     val htmlPath = "$frontPath/index.html"
+
+    val adminPassword = System.getenv()["ADMIN_PASSWORD"]
 
     object Wasm {
         val name = "skiko.wasm"
