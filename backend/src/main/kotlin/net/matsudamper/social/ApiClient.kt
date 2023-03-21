@@ -14,11 +14,24 @@ import net.matsudamper.social.activitystreams.ActivityStreamReceivePerson
 import net.matsudamper.social.base.ObjectMapper
 import org.slf4j.LoggerFactory
 import java.net.URL
+import net.matsudamper.social.base.CustomLogger
 
 
 class ApiClient(
     private val httpClient: HttpClient = HttpClient(CIO),
 ) {
+
+    suspend fun getPersonJson(url: String) : String {
+        val body = httpClient
+            .get {
+                url(URL(url))
+                header("Accept", "application/activity+json")
+            }
+            .call.body<String>()
+        CustomLogger.General.debug(body)
+        return body
+    }
+
     suspend fun getPerson(url: String) : Result<ActivityStreamReceivePerson> {
         val body = httpClient
             .get {
@@ -26,7 +39,7 @@ class ApiClient(
                 header("Accept", "application/activity+json")
             }
             .call.body<String>()
-
+        CustomLogger.General.debug(body)
         return runCatching {
             val jsonElement = ObjectMapper.json
                 .decodeFromString<JsonObject>(body)
