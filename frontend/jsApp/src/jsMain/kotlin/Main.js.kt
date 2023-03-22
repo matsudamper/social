@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
     }
 
     onWasmReady {
-        Window(
+        ResizableComposeWindow(
             title = "social",
         ) {
             val density = LocalDensity.current
