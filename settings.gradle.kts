@@ -35,7 +35,7 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     versionCatalogs {
         create("libs") {
-            val kotlinVersion = "1.8.10"
+            val kotlinVersion = extra["kotlin.version"] as String
 //            plugin("kotlin", "org.jetbrains.kotlin.jvm").version(kotlinVersion)
             plugin("kotlin.multiplatform", "org.jetbrains.kotlin.multiplatform").version(kotlinVersion)
             plugin("kotlin.serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
