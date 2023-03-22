@@ -1,45 +1,48 @@
+import org.gradle.internal.jvm.Jvm
+
 plugins {
     id("application")
-    alias(libs.plugins.kotlin)
+    kotlin("multiplatform")
     alias(libs.plugins.kotlin.serialization)
-    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
 }
 
 base.archivesName.set("social")
-group = "net.matsudamper.social"
-
-dependencies {
-    implementation(project(":activitystreams"))
-    implementation(project(":base"))
-
-    implementation(kotlin("stdlib"))
-    implementation(libs.kotlin.serialization.json)
-    implementation(libs.logback.classic)
-
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.engine)
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.server.statusPages)
-    implementation(libs.ktor.server.defaultHeaders)
-    implementation(libs.ktor.serialization.json)
-    implementation(libs.ktor.server.contentNegotiation)
-
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
+group = "net.matsudamper.social.backend"
 
 kotlin {
-    jvmToolchain(17)
-}
+    jvm {
+        withJava()
+    }
+    sourceSets {
+        jvmToolchain(17)
+        val jvmMain by getting {
+            dependencies {
+                implementation(project(":backend:activitystreams"))
+                implementation(project(":backend:base"))
 
-allprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+                implementation(kotlin("stdlib"))
+                implementation(libs.kotlin.serialization.json)
+                implementation(libs.logback.classic)
 
-    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-
+                implementation(libs.ktor.server.core)
+                implementation(libs.ktor.server.engine)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.cio)
+                implementation(libs.ktor.server.statusPages)
+                implementation(libs.ktor.server.defaultHeaders)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.ktor.server.contentNegotiation)
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
     }
 }
+
+
+//tasks.test {
+//    useJUnitPlatform()
+//}

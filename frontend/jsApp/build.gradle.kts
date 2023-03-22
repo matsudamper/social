@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     id("org.jetbrains.compose")
 }
 
@@ -11,7 +11,7 @@ kotlin {
     sourceSets {
         val jsMain by getting {
             dependencies {
-                implementation(project(":common"))
+                implementation(project(":frontend:common"))
             }
         }
     }

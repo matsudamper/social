@@ -1,15 +1,30 @@
 plugins {
-    alias(libs.plugins.kotlin)
+    kotlin("multiplatform")
 }
 
-dependencies {
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("reflect"))
+kotlin {
+    jvm {
+        withJava()
+    }
+    sourceSets {
+        jvmToolchain(17)
+        val jvmMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib"))
+                implementation(kotlin("reflect"))
 
-    implementation(libs.kotlin.serialization.json)
-    implementation(libs.log4j.api)
+                implementation(libs.kotlin.serialization.json)
+                implementation(libs.log4j.api)
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+    }
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
+//tasks.test {
+//    useJUnitPlatform()
+//}
