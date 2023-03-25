@@ -8,5 +8,9 @@ enum class Screen : Direction {
     Login {
         override val title: String = "ログイン"
         override val url: String = "/login"
+    },
+    Admin {
+        override val title: String = "ログイン"
+        override val url: String = "/admin"
     }
 }

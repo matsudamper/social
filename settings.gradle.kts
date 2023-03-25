@@ -6,7 +6,9 @@ include(":backend:base")
 include(":backend")
 
 include(":frontend:jsApp")
-include(":frontend:common")
+include(":frontend:common:ui")
+include(":frontend:common:viewmodel")
+include(":frontend:common:uistate")
 
 include(":shared")
 

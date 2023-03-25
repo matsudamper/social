@@ -1,11 +1,11 @@
-package net.matsudamper.social.common
+package net.matsudamper.social.frontend.common.ui.screen
 
 import androidx.compose.material.Text
 import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
 
 @Composable
-fun Root(
+public fun Root(
     text: String,
     onClick: () -> Unit,
 ) {

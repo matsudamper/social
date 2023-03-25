@@ -9,18 +9,19 @@ import androidx.compose.ui.unit.dp
 import kotlinx.browser.window
 import navigation.NavController
 import navigation.Screen
-import net.matsudamper.social.common.LoginScreen
-import net.matsudamper.social.common.Root
+import net.matsudamper.social.frontend.common.ui.CustomTheme
+import net.matsudamper.social.frontend.common.ui.screen.Root
+import net.matsudamper.social.frontend.common.ui.screen.admin.AdminRootScreen
+import net.matsudamper.social.frontend.common.ui.screen.login.LoginScreen
+import net.matsudamper.social.frontend.common.viewmodel.admin.AdminScreenViewModel
+import net.matsudamper.social.frontend.common.viewmodel.LoginScreenViewModel
+import net.matsudamper.social.frontend.common.viewmodel.admin.AdminSession
+import net.matsudamper.social.frontend.common.viewmodel.admin.AdminSessionStorage
+import net.matsudamper.social.shared.Cookies
 import org.jetbrains.skiko.wasm.onWasmReady
-import org.w3c.dom.HTMLCanvasElement
 
 
 fun main(args: Array<String>) {
-    @Suppress("unused")
-    val canvas = (window.document.getElementById("ComposeTarget") as HTMLCanvasElement).apply {
-        fillViewportSize()
-    }
-
     onWasmReady {
         ResizableComposeWindow(
             title = "social",
@@ -41,42 +42,60 @@ fun main(args: Array<String>) {
                 updateSize()
                 window.addEventListener(
                     type = "resize",
-                    callback = { updateSize() }
+                    callback = { updateSize() },
                 )
             }
-            Box(
-                modifier = Modifier
-                    .width(width)
-                    .height(height)
-                    .fillMaxSize()
-            ) {
-                val navController = remember {
-                    NavController(
-                        initial = Screen.Root,
-                        directions = Screen.values().toList()
-                    )
-                }
-
-                when (val current = navController.currentNavigation) {
-                    Screen.Root -> {
-                        Root(
-                            text = current.title,
-                            onClick = {
-                                navController.navigate(Screen.Login)
-                            }
+            CustomTheme {
+                Box(
+                    modifier = Modifier
+                        .width(width)
+                        .height(height)
+                        .fillMaxSize(),
+                ) {
+                    val navController = remember {
+                        NavController(
+                            initial = Screen.Root,
+                            directions = Screen.values().toList(),
                         )
                     }
 
-                    Screen.Login -> {
-                        LoginScreen()
+                    when (val current = navController.currentNavigation) {
+                        Screen.Root -> {
+                            Root(
+                                text = current.title,
+                                onClick = {
+                                    navController.navigate(Screen.Login)
+                                },
+                            )
+                        }
+
+                        Screen.Login -> {
+                            val coroutineScope = rememberCoroutineScope()
+                            val viewModel = remember {
+                                LoginScreenViewModel(
+                                    coroutineScope = coroutineScope,
+                                )
+                            }
+                            LoginScreen(
+                                uiState = viewModel.uiStateFlow.collectAsState().value,
+                            )
+                        }
+
+                        Screen.Admin -> {
+                            val coroutineScope = rememberCoroutineScope()
+                            val viewModel = remember {
+                                AdminScreenViewModel(
+                                    coroutineScope = coroutineScope,
+                                    adminSessionStorage = JsAdminSessionStorage(),
+                                )
+                            }
+                            AdminRootScreen(
+                                uiState = viewModel.uiStateFlow.collectAsState().value,
+                            )
+                        }
                     }
                 }
             }
         }
     }
-}
-
-private fun HTMLCanvasElement.fillViewportSize() {
-    setAttribute("width", "${window.innerWidth * 1}")
-    setAttribute("height", "${window.innerHeight * 1}")
 }

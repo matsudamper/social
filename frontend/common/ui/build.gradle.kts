@@ -11,6 +11,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(project(":frontend:common:uistate"))
+                implementation(project(":frontend:common:viewmodel"))
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
@@ -22,4 +24,5 @@ kotlin {
             }
         }
     }
+    explicitApi()
 }

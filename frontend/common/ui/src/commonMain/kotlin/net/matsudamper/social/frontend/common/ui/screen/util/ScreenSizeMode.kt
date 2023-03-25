@@ -1,4 +1,4 @@
-package net.matsudamper.social.common.util
+package net.matsudamper.social.frontend.common.ui.screen.util
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
