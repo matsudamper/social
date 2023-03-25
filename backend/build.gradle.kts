@@ -19,6 +19,7 @@ kotlin {
             dependencies {
                 implementation(project(":backend:activitystreams"))
                 implementation(project(":backend:base"))
+                implementation(project(":backend:graphql"))
 
                 implementation(kotlin("stdlib"))
                 implementation(libs.kotlin.serialization.json)

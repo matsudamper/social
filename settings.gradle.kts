@@ -3,6 +3,7 @@
 rootProject.name = "social"
 include(":backend:activitystreams")
 include(":backend:base")
+include(":backend:graphql")
 include(":backend")
 
 include(":frontend:jsApp")

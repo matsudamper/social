@@ -1,0 +1,11 @@
+type AdminMutation {
+    addUser(name: String!, password: String!): Boolean!
+}
+
+type AdminQuery {
+    config: AdminConfig!
+}
+
+type AdminConfig {
+    isLoggedIn: Boolean!
+}
