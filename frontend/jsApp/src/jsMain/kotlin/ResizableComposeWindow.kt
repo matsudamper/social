@@ -6,6 +6,8 @@
 )
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.window.ComposeWindow
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -52,14 +54,6 @@ public fun ResizableComposeWindow(
     }
 
     ComposeWindow().apply {
-        window.addEventListener("resize", {
-            canvas.fillViewportSize()
-            layer.layer.attachTo(canvas)
-            val scale = layer.layer.contentScale
-            layer.setSize((canvas.width / scale).toInt(), (canvas.height / scale).toInt())
-            layer.layer.needRedraw()
-        })
-
         // WORKAROUND: ComposeWindow does not implement `setTitle(title)`
         val htmlTitleElement = (
                 htmlHeadElement.getElementsByTagName("title").item(0)
@@ -68,6 +62,16 @@ public fun ResizableComposeWindow(
         htmlTitleElement.textContent = title
 
         setContent {
+            val density = LocalDensity.current
+            LaunchedEffect(Unit) {
+                window.addEventListener("resize", {
+                    canvas.fillViewportSize()
+                    layer.layer.attachTo(canvas)
+                    val scale = layer.layer.contentScale
+                    layer.setSize((canvas.width * density.density / scale).toInt(), (canvas.height * density.density / scale).toInt())
+                    layer.layer.needRedraw()
+                })
+            }
             content(this)
         }
     }
