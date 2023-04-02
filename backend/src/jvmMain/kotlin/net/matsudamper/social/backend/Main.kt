@@ -13,6 +13,7 @@ import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.file
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.forwardedheaders.ForwardedHeaders
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondFile
@@ -56,6 +57,7 @@ class SocialGraphQlContext(
 private val apiClient = ApiClient()
 
 fun Application.myApplicationModule() {
+    install(ForwardedHeaders)
     install(ContentNegotiation) {
         json(
             json = ObjectMapper.json,
