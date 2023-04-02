@@ -1,0 +1,8 @@
+mutation RootMutation {
+    adminMutation {
+        login(password: "") {
+            isSuccess
+            value
+        }
+    }
+}

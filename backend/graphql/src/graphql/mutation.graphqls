@@ -1,5 +1,15 @@
+type RootMutation {
+    adminMutation: AdminMutation!
+}
+
 type AdminMutation {
+    login(password: String!): AdminLoginResult!
     addUser(name: String!, password: String!): Boolean!
+}
+
+type AdminLoginResult {
+    isSuccess: Boolean!
+    value: String
 }
 
 type AdminQuery {

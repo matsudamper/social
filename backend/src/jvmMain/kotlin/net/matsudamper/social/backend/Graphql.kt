@@ -2,13 +2,6 @@ package net.matsudamper.social.backend
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import me.retty.graphql.model.AdminConfigQueryResolver
-
-class Graphql {
-    init {
-        AdminConfigQueryResolver()
-    }
-}
 
 @Serializable
 data class GraphQlRequest(

@@ -10,6 +10,7 @@ include(":frontend:jsApp")
 include(":frontend:common:ui")
 include(":frontend:common:viewmodel")
 include(":frontend:common:uistate")
+include(":frontend:common:schema")
 
 include(":shared")
 

@@ -12,6 +12,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":frontend:common:uistate"))
+                implementation(project(":frontend:common:schema"))
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)

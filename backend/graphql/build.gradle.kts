@@ -75,6 +75,6 @@ val graphqlCodegen = tasks.named<io.github.kobylynskyi.graphql.codegen.gradle.Gr
 //    )
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+tasks.withType<JavaCompile>() {
     dependsOn(graphqlCodegen)
 }

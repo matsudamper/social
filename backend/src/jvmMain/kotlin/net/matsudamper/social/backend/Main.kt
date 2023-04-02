@@ -1,6 +1,13 @@
 package net.matsudamper.social.backend
 
 import java.io.File
+import java.util.concurrent.CompletionStage
+import graphql.ExecutionInput
+import graphql.GraphQL
+import graphql.execution.AsyncExecutionStrategy
+import graphql.kickstart.tools.SchemaParser
+import graphql.schema.DataFetchingEnvironment
+import graphql.schema.GraphQLScalarType
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
@@ -19,9 +26,12 @@ import io.ktor.server.routing.accept
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
+import me.retty.graphql.model.AdminMutationResolver
+import me.retty.graphql.model.QlAdminMutation
 import net.matsudamper.social.backend.activitystreams.PersonResponse
 import net.matsudamper.social.backend.base.ObjectMapper
 import net.matsudamper.social.backend.base.ServerEnv
+import net.matsudamper.social.backend.graphql.AdminMutationResolverImpl
 
 class Main {
     companion object {
@@ -53,8 +63,32 @@ fun Application.myApplicationModule() {
     routing {
         post("/query") {
             val request = call.receive<GraphQlRequest>()
+            val schema = SchemaParser.newParser()
+//                .scalars(
+//                    GraphQLScalarType.newScalar()
+//                        .name("")
+//                        .build()
+//                )
+                .resolvers(
+                    AdminMutationResolverImpl(
+                        setCookie = { key, value ->
+                            call.response.cookies.append(key, value)
+                        },
+                    ),
+                )
+                .build()
+                .makeExecutableSchema()
 
-            call.respond(request)
+            val graphql = GraphQL.newGraphQL(schema)
+                .queryExecutionStrategy(AsyncExecutionStrategy())
+                .build()
+
+            val executionInputBuilder = ExecutionInput.newExecutionInput()
+                .query(request.query)
+
+            val result = graphql.execute(executionInputBuilder)
+
+            call.respond(result.toString())
         }
         get(".well-known/webfinger") {
             println("webfing=================================")
