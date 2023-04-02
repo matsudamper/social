@@ -3,7 +3,6 @@ package net.matsudamper.social.backend.graphql
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import graphql.schema.DataFetchingEnvironment
-import net.matsudamper.social.backend.SocialGraphQlContext
 import net.matsudamper.social.backend.base.ServerEnv
 import net.matsudamper.social.graphql.model.AdminMutationResolver
 import net.matsudamper.social.graphql.model.QlAdminLoginResult
@@ -21,12 +20,13 @@ class AdminMutationResolverImpl : AdminMutationResolver {
 
     override fun login(
         adminMutation: QlAdminMutation,
-        passsword: String,
+        password: String,
         env: DataFetchingEnvironment,
     ): CompletionStage<QlAdminLoginResult> {
         val context = env.getLocalContext<SocialGraphQlContext>()
+        println("password == ServerEnv.adminPassword -> ${password == ServerEnv.adminPassword}")
         return CompletableFuture.completedFuture(
-            if (passsword == ServerEnv.adminPassword) {
+            if (password == ServerEnv.adminPassword) {
                 context.setCookie("social_admin_cookie", "test")
                 QlAdminLoginResult(
                     isSuccess = true,
