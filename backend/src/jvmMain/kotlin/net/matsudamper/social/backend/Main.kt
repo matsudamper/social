@@ -75,6 +75,7 @@ fun Application.myApplicationModule() {
                 val executionInputBuilder = ExecutionInput.newExecutionInput()
                     .localContext(SocialGraphQlContext(call))
                     .query(request.query)
+                    .variables(request.variables)
 
                 val result = SocialGraphQlSchema.graphql
                     .execute(executionInputBuilder)
