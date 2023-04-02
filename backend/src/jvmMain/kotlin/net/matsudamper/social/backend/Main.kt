@@ -25,6 +25,7 @@ import io.ktor.server.routing.routing
 import net.matsudamper.social.backend.activitystreams.PersonResponse
 import net.matsudamper.social.backend.base.ObjectMapper
 import net.matsudamper.social.backend.base.ServerEnv
+import net.matsudamper.social.backend.graphql.SocialGraphQlContext
 import net.matsudamper.social.backend.graphql.SocialGraphQlSchema
 
 class Main {
@@ -43,16 +44,6 @@ class Main {
         }
     }
 }
-
-class SocialGraphQlContext(
-    val call: ApplicationCall,
-) {
-    fun setCookie(key: String, value: String) {
-        call.response.cookies.append(key, value)
-    }
-}
-
-
 
 private val apiClient = ApiClient()
 
@@ -81,7 +72,10 @@ fun Application.myApplicationModule() {
 
                 val result = SocialGraphQlSchema.graphql
                     .execute(executionInputBuilder)
-
+                result.errors.onEach {
+                    println("===========error")
+                    println("error=${it.message}")
+                }
                 call.respond(result.toString())
             }
         }
