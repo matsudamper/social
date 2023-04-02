@@ -65,6 +65,7 @@ public fun AdminLoginScreen(
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Password,
                     ),
+                    maxLines = 1,
                 )
                 Button(
                     modifier = Modifier.align(Alignment.End),
