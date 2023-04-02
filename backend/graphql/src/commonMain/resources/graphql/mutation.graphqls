@@ -1,4 +1,4 @@
-type RootMutation {
+type Mutation {
     adminMutation: AdminMutation!
 }
 
@@ -10,12 +10,4 @@ type AdminMutation {
 type AdminLoginResult {
     isSuccess: Boolean!
     value: String
-}
-
-type AdminQuery {
-    config: AdminConfig!
-}
-
-type AdminConfig {
-    isLoggedIn: Boolean!
 }

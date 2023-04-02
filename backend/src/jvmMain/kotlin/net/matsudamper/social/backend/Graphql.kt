@@ -8,7 +8,7 @@ data class GraphQlRequest(
     @SerialName("query") val query: String? = null,
     @SerialName("operationName") val operationName: String = "",
     @SerialName("variables") val variables: Map<String, String> = mapOf(),
-    @SerialName("extensions") val extensions: Extensions?,
+    @SerialName("extensions") val extensions: Extensions? = null,
 ) {
     @Serializable
     data class Extensions(

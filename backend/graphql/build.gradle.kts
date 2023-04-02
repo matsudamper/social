@@ -46,12 +46,12 @@ sourceSets {
 }
 
 val graphqlCodegen = tasks.named<io.github.kobylynskyi.graphql.codegen.gradle.GraphQLCodegenGradleTask>("graphqlCodegen") {
-    graphqlSchemaPaths = file("$projectDir/src/graphql").listFiles().orEmpty()
+    graphqlSchemaPaths = file("$projectDir/src/commonMain/resources/graphql").listFiles().orEmpty()
         .filter { it.extension == "graphqls" }
         .map { it.toString() }
     generatedLanguage = com.kobylynskyi.graphql.codegen.model.GeneratedLanguage.KOTLIN
     outputDir = File(generatedPath)
-    packageName = "me.retty.graphql.model"
+    packageName = "net.matsudamper.social.graphql.model"
     addGeneratedAnnotation = true
     fieldsWithResolvers = setOf("@lazy")
     generateParameterizedFieldsResolvers = true
@@ -61,9 +61,12 @@ val graphqlCodegen = tasks.named<io.github.kobylynskyi.graphql.codegen.gradle.Gr
     generateImmutableModels = true
     modelNamePrefix = "Ql"
     generateApisWithThrowsException = false
-    isGenerateSealedInterfaces = true
+//    isGenerateSealedInterfaces = true
     parentInterfaces {
         resolver = "graphql.kickstart.tools.GraphQLResolver<{{TYPE}}>"
+        mutationResolver = "graphql.kickstart.tools.GraphQLMutationResolver"
+        subscriptionResolver = "graphql.kickstart.tools.GraphQLSubscriptionResolver"
+        queryResolver = "graphql.kickstart.tools.GraphQLQueryResolver"
     }
 //    generateModelsForRootTypes = true
 //    customTypesMapping = mutableMapOf(Pair("EpochMillis", "java.time.LocalDateTime"))

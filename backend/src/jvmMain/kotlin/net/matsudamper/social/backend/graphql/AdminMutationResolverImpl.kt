@@ -3,14 +3,13 @@ package net.matsudamper.social.backend.graphql
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import graphql.schema.DataFetchingEnvironment
-import me.retty.graphql.model.AdminMutationResolver
-import me.retty.graphql.model.QlAdminLoginResult
-import me.retty.graphql.model.QlAdminMutation
+import net.matsudamper.social.backend.SocialGraphQlContext
 import net.matsudamper.social.backend.base.ServerEnv
+import net.matsudamper.social.graphql.model.AdminMutationResolver
+import net.matsudamper.social.graphql.model.QlAdminLoginResult
+import net.matsudamper.social.graphql.model.QlAdminMutation
 
-class AdminMutationResolverImpl(
-    private val setCookie: (key: String, value: String) -> Unit,
-) : AdminMutationResolver {
+class AdminMutationResolverImpl : AdminMutationResolver {
     override fun addUser(
         adminMutation: QlAdminMutation,
         name: String,
@@ -25,9 +24,10 @@ class AdminMutationResolverImpl(
         passsword: String,
         env: DataFetchingEnvironment,
     ): CompletionStage<QlAdminLoginResult> {
+        val context = env.getLocalContext<SocialGraphQlContext>()
         return CompletableFuture.completedFuture(
             if (passsword == ServerEnv.adminPassword) {
-                setCookie("social_admin_cookie", "test")
+                context.setCookie("social_admin_cookie", "test")
                 QlAdminLoginResult(
                     isSuccess = true,
                     value = "test",

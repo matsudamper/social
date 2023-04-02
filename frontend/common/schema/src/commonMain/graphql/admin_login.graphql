@@ -1,6 +1,6 @@
-mutation RootMutation {
+mutation AdminLoginMutation($password: String!) {
     adminMutation {
-        login(password: "") {
+        login(password: $password) {
             isSuccess
             value
         }

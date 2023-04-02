@@ -1,17 +1,12 @@
 package net.matsudamper.social.backend
 
 import java.io.File
-import java.util.concurrent.CompletionStage
 import graphql.ExecutionInput
-import graphql.GraphQL
-import graphql.execution.AsyncExecutionStrategy
-import graphql.kickstart.tools.SchemaParser
-import graphql.schema.DataFetchingEnvironment
-import graphql.schema.GraphQLScalarType
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
@@ -26,12 +21,10 @@ import io.ktor.server.routing.accept
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import me.retty.graphql.model.AdminMutationResolver
-import me.retty.graphql.model.QlAdminMutation
 import net.matsudamper.social.backend.activitystreams.PersonResponse
 import net.matsudamper.social.backend.base.ObjectMapper
 import net.matsudamper.social.backend.base.ServerEnv
-import net.matsudamper.social.backend.graphql.AdminMutationResolverImpl
+import net.matsudamper.social.backend.graphql.SocialGraphQlSchema
 
 class Main {
     companion object {
@@ -50,6 +43,16 @@ class Main {
     }
 }
 
+class SocialGraphQlContext(
+    val call: ApplicationCall,
+) {
+    fun setCookie(key: String, value: String) {
+        call.response.cookies.append(key, value)
+    }
+}
+
+
+
 private val apiClient = ApiClient()
 
 fun Application.myApplicationModule() {
@@ -58,38 +61,28 @@ fun Application.myApplicationModule() {
             json = ObjectMapper.json,
             contentType = ContentType.Application.ActivityJson,
         )
+        json(
+            json = ObjectMapper.json,
+            contentType = ContentType.Application.Json,
+        )
     }
 
     routing {
-        post("/query") {
-            val request = call.receive<GraphQlRequest>()
-            val schema = SchemaParser.newParser()
-//                .scalars(
-//                    GraphQLScalarType.newScalar()
-//                        .name("")
-//                        .build()
-//                )
-                .resolvers(
-                    AdminMutationResolverImpl(
-                        setCookie = { key, value ->
-                            call.response.cookies.append(key, value)
-                        },
-                    ),
-                )
-                .build()
-                .makeExecutableSchema()
+        accept(ContentType.Application.Json) {
+            post("/query") {
+                val request = call.receive<GraphQlRequest>()
 
-            val graphql = GraphQL.newGraphQL(schema)
-                .queryExecutionStrategy(AsyncExecutionStrategy())
-                .build()
+                val executionInputBuilder = ExecutionInput.newExecutionInput()
+                    .localContext(SocialGraphQlContext(call))
+                    .query(request.query)
 
-            val executionInputBuilder = ExecutionInput.newExecutionInput()
-                .query(request.query)
+                val result = SocialGraphQlSchema.graphql
+                    .execute(executionInputBuilder)
 
-            val result = graphql.execute(executionInputBuilder)
-
-            call.respond(result.toString())
+                call.respond(result.toString())
+            }
         }
+
         get(".well-known/webfinger") {
             println("webfing=================================")
             val resource = call.parameters["resource"]!!
