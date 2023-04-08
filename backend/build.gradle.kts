@@ -34,6 +34,7 @@ kotlin {
                 implementation(libs.ktor.server.fowardedHeader)
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.server.contentNegotiation)
+                implementation(libs.ktor.server.callLogging)
             }
         }
         val jvmTest by getting {
