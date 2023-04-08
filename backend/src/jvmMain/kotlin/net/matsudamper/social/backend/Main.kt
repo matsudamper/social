@@ -59,6 +59,24 @@ fun Application.myApplicationModule() {
             contentType = ContentType.Application.Json,
         )
     }
+    install(CallLogging) {
+        level = Level.WARN
+        filter { call ->
+            CustomLogger.General.debug(
+                buildString {
+                    appendLine("==========${call.request.path()}==========")
+                    appendLine(
+                        call.request.headers.entries()
+                            .map { (key, value) ->
+                                "$key=$value"
+                            }
+                            .joinToString("\n"),
+                    )
+                },
+            )
+            true
+        }
+    }
 
     routing {
         accept(ContentType.Application.Json) {
