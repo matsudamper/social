@@ -5,6 +5,7 @@ import graphql.ExecutionInput
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.*
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
@@ -12,8 +13,12 @@ import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.file
+import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.forwardedheaders.ForwardedHeaders
+import io.ktor.server.plugins.forwardedheaders.XForwardedHeaders
+import io.ktor.server.request.header
+import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondFile
@@ -23,10 +28,12 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import net.matsudamper.social.backend.activitystreams.PersonResponse
+import net.matsudamper.social.backend.base.CustomLogger
 import net.matsudamper.social.backend.base.ObjectMapper
 import net.matsudamper.social.backend.base.ServerEnv
 import net.matsudamper.social.backend.graphql.SocialGraphQlContext
 import net.matsudamper.social.backend.graphql.SocialGraphQlSchema
+import org.slf4j.event.Level
 
 class Main {
     companion object {
