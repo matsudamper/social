@@ -12,7 +12,7 @@ object CustomLogger {
         }
     }
     object General {
-        private val logger = LoggerFactory.getLogger("ParseFail")!!
+        private val logger = LoggerFactory.getLogger("General")!!
 
         fun info(message: String) {
             logger.info(message)
