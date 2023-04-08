@@ -49,6 +49,7 @@ private val apiClient = ApiClient()
 
 fun Application.myApplicationModule() {
     install(ForwardedHeaders)
+    install(XForwardedHeaders)
     install(ContentNegotiation) {
         json(
             json = ObjectMapper.json,
